@@ -85,8 +85,8 @@ pipeline {
                                 -t ott .
                             '''
 
-                            sh 'docker tag ott <DOCKERHUB-USERNAME>/ott:latest'
-                            sh 'docker push <DOCKERHUB-USERNAME>/ott:latest'
+                            sh 'docker tag ott comal21/ott:latest'
+                            sh 'docker push comal21/ott:latest'
                         }
                     }
                 }
@@ -95,13 +95,13 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh 'trivy image <DOCKERHUB-USERNAME>/ott:latest > trivyimage.txt'
+                sh 'trivy image comal21/ott:latest > trivyimage.txt'
             }
         }
 
         stage('Deploy to Container') {
             steps {
-                sh 'docker run -d --name ott -p 8081:80 <DOCKERHUB-USERNAME>/ott:latest'
+                sh 'docker run -d --name ott -p 8081:80 comal21/ott:latest'
             }
         }
     }
