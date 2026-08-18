@@ -624,7 +624,7 @@ flowchart LR
 
 ### Grafana
 
-**Install Grafana on Ubuntu 22.04 and Set it up to Work with Prometheus**
+**Install Grafana on Ubuntu 24.04 and Set it up to Work with Prometheus**
 
 **Step 1: Install Dependencies:**
 
@@ -941,6 +941,16 @@ flowchart LR
    - `project`: Specify the project the application belongs to.
    - `source`: Set the source of your application, including the GitHub repository URL, revision, and the path to the application within the repository.
    - `syncPolicy`: Configure the sync policy, including automatic syncing, pruning, and self-healing.
+
+  ## The ArgoCD Application was configured through the ArgoCD UI.
+
+The application is configured to:
+
+- Monitor the GitHub repository
+- Track the `main` branch
+- Use the `Kubernetes/` directory as the manifest source
+- Deploy to the Amazon EKS cluster
+- Automatically synchronize changes from Git
 
 4. **Access your Application**
    - To Access the app make sure port 30007 is open in your security group and then open a new tab paste your NodeIP:30007, your app should be running.
