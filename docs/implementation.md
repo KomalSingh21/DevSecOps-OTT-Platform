@@ -256,6 +256,7 @@ flowchart TD
 - Create a CI/CD pipeline in Jenkins to automate your application deployment.
 
 ```groovy
+
 pipeline {
     agent any
 
@@ -276,7 +277,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/KomalSingh21/OTT-Application.git'
+                    url: 'https://github.com/KomalSingh21/DevSecOps-OTT-Platform.git'
             }
         }
 
@@ -285,8 +286,8 @@ pipeline {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
                         $SCANNER_HOME/bin/sonar-scanner \\
-                        -Dsonar.projectName=Netflix \\
-                        -Dsonar.projectKey=Netflix
+                        -Dsonar.projectName=ott \\
+                        -Dsonar.projectKey=ott
                     '''
                 }
             }
@@ -339,11 +340,11 @@ pipeline {
                             sh '''
                                 docker build \\
                                 --build-arg TMDB_V3_API_KEY="$TMDB_V3_API_KEY" \\
-                                -t netflix .
+                                -t ott .
                             '''
 
-                            sh 'docker tag netflix <DOCKERHUB-USERNAME>/netflix:latest'
-                            sh 'docker push <DOCKERHUB-USERNAME>/netflix:latest'
+                            sh 'docker tag ott <DOCKERHUB-USERNAME>/ott:latest'
+                            sh 'docker push <DOCKERHUB-USERNAME>/ott:latest'
                         }
                     }
                 }
@@ -352,17 +353,44 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh 'trivy image <DOCKERHUB-USERNAME>/netflix:latest > trivyimage.txt'
+                sh 'trivy image <DOCKERHUB-USERNAME>/ott:latest > trivyimage.txt'
             }
         }
 
         stage('Deploy to Container') {
             steps {
-                sh 'docker run -d --name netflix -p 8081:80 <DOCKERHUB-USERNAME>/netflix:latest'
+                sh 'docker run -d --name ott -p 8081:80 <DOCKERHUB-USERNAME>/ott:latest'
             }
         }
     }
 }
+        stage('Deploy to kubernetes'){
+            steps{
+                script{
+                    dir('Kubernetes') {
+                        withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                                sh 'kubectl apply -f deployment.yml'
+                                sh 'kubectl apply -f service.yml'
+                        }   
+                    }
+                }
+       
+
+    
+    post {
+     always {
+        emailext attachLog: true,
+            subject: "'${currentBuild.result}'",
+            body: "Project: ${env.JOB_NAME}<br/>" +
+                "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                "URL: ${env.BUILD_URL}<br/>",
+            to: 'comalsingh12@gmail.com',                                #change mail here
+            attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+        }
+    }
+}
+}
+
 ```
 > **Security improvement:** The TMDB key is stored in Jenkins Credentials (`tmdb-api-key`) and injected only during the build. Docker Hub credentials are also stored in Jenkins Credentials.
 
