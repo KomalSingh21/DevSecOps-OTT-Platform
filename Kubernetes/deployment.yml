@@ -1,21 +1,58 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: ott-app
   labels:
     app: ott-app
+
 spec:
   replicas: 2
+
   selector:
     matchLabels:
       app: ott-app
+
   template:
     metadata:
       labels:
         app: ott-app
+
     spec:
       containers:
-      - name: ott-app
-        image: comal21/ott:latest
-        ports:
-        - containerPort: 80
+        - name: ott-app
+          image: comal21/ott:latest
+
+          ports:
+            - containerPort: 80
+              protocol: TCP
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+          # Readiness probe determines whether the pod is ready
+          # to receive traffic from the Kubernetes Service.
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          # Liveness probe determines whether the container
+          # is healthy or needs to be restarted.
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
