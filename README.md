@@ -120,7 +120,7 @@ The OTT application is deployed and accessible through Kubernetes.
 
 ![Node Exporter](./public/assets/node-exporter-endpoint.png)
 
-## 🎯 What This Project Demonstrates
+## What This Project Demonstrates
 
 - End-to-end DevSecOps implementation
 - CI/CD automation with Jenkins
@@ -131,7 +131,7 @@ The OTT application is deployed and accessible through Kubernetes.
 - Security scanning integrated into CI/CD
 - Real-world troubleshooting across AWS, Docker, Kubernetes and monitoring
 
-## 📚 Documentation
+## Documentation
 
 Detailed implementation steps, prerequisites, commands and troubleshooting
 are available in the [`docs/`](./docs/) directory.
