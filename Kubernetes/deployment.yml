@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ott-app
+  labels:
+    app: ott-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ott-app
+  template:
+    metadata:
+      labels:
+        app: ott-app
+    spec:
+      containers:
+      - name: ott-app
+        image: comal21/ott:latest
+        ports:
+        - containerPort: 80
