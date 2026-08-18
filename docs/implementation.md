@@ -938,26 +938,39 @@ flowchart LR
 
 **Phase 7: Cleanup**
 
-🧹 Cleanup
+Cleanup
 
-Terminate resources when the project is no longer required:
-
-```text
-EC2 instances
-Elastic IPs
-EBS volumes
-EKS cluster
-EKS node groups
-Load balancers
-Docker containers/images
-```
-
-For Docker:
+Remove Kubernetes resources first:
 
 ```bash
-docker ps
-docker stop <container>
-docker rm <container>
+kubectl delete application ott-app -n argocd
+kubectl delete namespace argocd
+
+helm uninstall prometheus-node-exporter -n prometheus-node-exporter
+
+kubectl delete namespace prometheus-node-exporter
 ```
+
+Delete EKS:
+
+```bash
+aws eks delete-nodegroup --cluster-name ott-app --nodegroup-name ott-app-nodes --region <region>
+
+aws eks delete-cluster --name ott-app --region <region>
+```
+
+Terminate EC2 instances and review:
+
+```text
+Elastic IPs
+EBS volumes
+Load balancers
+Security groups
+IAM roles
+Docker containers
+Docker images
+```
+
+> 💰 EKS control-plane and load-balancer resources can continue generating charges until deleted.
 
 ---
