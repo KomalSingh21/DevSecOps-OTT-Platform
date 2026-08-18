@@ -12,3 +12,6 @@ spec:
     port: 9100
     targetPort: 9100
   type: NodePort
+  # NodePort is used for this lab/demo deployment.
+  # For production on AWS EKS, consider using LoadBalancer
+  # or an Ingress controller for external access.
